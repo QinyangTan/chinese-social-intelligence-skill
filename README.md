@@ -4,56 +4,73 @@
 
 > 核心目标：先像一个熟悉中国社会交往的人那样判断局面，再决定怎么说、怎么做；不是把回复套成“高情商话术”。
 
-## 特点
+## v0.2：460 条可执行 Guide
 
-- **即插即用**：符合 Agent Skills 的 `SKILL.md` 目录规范；支持 Skills 的 Agent 可直接加载。
-- **普通 LLM 也能用**：`dist/chinese-social-intelligence.system.md` 可直接放进 system/developer prompt 或知识库。
-- **不是模板库**：先判断关系、场合、公开/私下、长期关系、责任与风险，再生成语言或动作。
-- **古典材料经过现代化编译**：从《论语》《孟子》《礼记》《菜根谭》《增广贤文》《朱子家训》《弟子规》等提炼“可执行规则”，不是让模型机械复古。
-- **现代边界优先**：平等、尊重、隐私、同意、法治、职业伦理、安全与事实准确性，高于传统礼俗。
-- **覆盖操作而非只覆盖说话**：适用于发消息、回复、催办、拒绝、送礼、请客、群聊、公开/私下处理、冲突降级、慰问、求人办事等。
+当前版本已经从 foundation 扩展为：
+
+- **460 条**原子化、可执行 social guides
+- **23 个**现实场景模块
+- **6 组** book/research digests
+- 一套关系/面子/人情/公开-私下的社会判断模型
+- 现代边界：平等、同意、隐私、法治、职业伦理、安全、反腐与反胁迫
+- Agent 外部行动策略
+- 现有 JSONL rules + eval cases + CI validation
+
+这些 guide 不是“中国人都这样”的刻板模板，而是 **默认启发 + 适用条件 + 应做 + 避免 + 现代边界 + 来源层**。
 
 ## 30 秒接入
 
 ### A. Agent Skills
 
-把整个仓库（或至少 `SKILL.md + references/`）放入你的 Agent Skills 目录，让 Agent 在涉及中文社会互动、措辞、关系处理、礼仪与沟通时加载本 Skill。
+把整个仓库放入 Agent Skills 目录。入口是 `SKILL.md`。
+
+Agent 不应一次加载全部规则；`references/guides/INDEX.md` 会告诉它按场景选择 1–3 个模块。
 
 ### B. 任意 LLM
 
-将：
+直接使用：
 
 ```
 dist/chinese-social-intelligence.system.md
 ```
 
-作为 system/developer prompt。若模型支持 RAG，再把 `references/` 建索引。
+作为 system/developer prompt；再把 `references/` 建 RAG 索引。
 
-### C. 应用级集成
+### C. 推荐运行顺序
 
-推荐两阶段：
+1. **读局**：目标、关系、亲疏、角色、公开/私下、情绪、风险、时机。
+2. **载入规则**：从 23 个 guide 模块选 1–3 个。
+3. **现代过滤**：安全、法律、同意、隐私、专业规则优先。
+4. **行动选择**：说 / 不说 / 私聊 / 公开 / 延后 / 留证 / 拒绝 / 补救。
+5. **自然措辞**：最后才生成微信、邮件、口语或正式文本。
 
-1. **Social reasoning**：判断关系、风险、面子、边界、时机、渠道。
-2. **Surface realization**：生成符合具体关系与媒介的自然中文。
-
-不要先生成一句“礼貌中文”再润色；先做社会判断。
-
-## 目录
+## 核心内容
 
 ```text
 .
 ├── SKILL.md
+├── SOURCE_CORPUS.md
 ├── dist/
 │   └── chinese-social-intelligence.system.md
 ├── references/
 │   ├── social-model.md
-│   ├── classics-to-rules.md
 │   ├── modern-principles.md
 │   ├── language-pragmatics.md
-│   ├── scenario-playbook.md
-│   └── action-policy.md
-├── examples/
-│   └── quick-examples.md
+│   ├── action-policy.md
+│   ├── book-digests/
+│   │   ├── 01-confucian-classics.md
+│   │   ├── 02-self-cultivation-household.md
+│   │   ├── 03-chinese-sociology.md
+│   │   ├── 04-guanxi-face-anthropology.md
+│   │   ├── 05-communication-conflict.md
+│   │   └── 06-modern-civic-ethics.md
+│   └── guides/
+│       ├── INDEX.md
+│       ├── 01-relationship-distance.md
+│       ├── ...
+│       └── 23-agent-action.md
+├── data/
+│   └── rules.jsonl
 ├── evals/
 │   └── cases.jsonl
 ├── scripts/
@@ -63,53 +80,59 @@ dist/chinese-social-intelligence.system.md
 └── LICENSE
 ```
 
-## 默认文化范围
+## 23 个 Guide 模块
 
-默认是 **现代中国大陆普通社会交往语境**，但绝不假定存在唯一的“中国人说话方式”。模型必须继续根据：
+1. 关系距离与定位
+2. 长辈与家庭
+3. 朋友与同辈
+4. 职场协作
+5. 上下级与权力差
+6. 学校师生与同学
+7. 求人、帮忙与人情往来
+8. 送礼、请客与宴席
+9. 微信、短信与线上表达
+10. 群聊、公开场合与面子
+11. 请求、拒绝与边界表达
+12. 催办、deadline、金钱与记录
+13. 道歉、感谢与关系修复
+14. 冲突、纠错与难谈话
+15. 丧事、疾病、失败与脆弱情境
+16. 隐私、闲话与第三方信息
+17. 信任、承诺与可靠性
+18. 新人进入环境与礼俗适配
+19. 面子、身份与体面
+20. 自然中文与措辞
+21. 喜事、节日与社交仪式
+22. 服务、陌生人与公共空间
+23. 社交判断与 Agent 行动
 
-- 年龄与代际
-- 亲疏
-- 家庭 / 学校 / 职场 / 商务
-- 正式 / 非正式
-- 微信 / 电话 / 邮件 / 当面
-- 一对一 / 群聊 / 公开场合
-- 地区与组织文化（若已知）
-- 用户本人明确偏好
+## 来源层
 
-动态调整。
+### 公版/古典
+《论语》《孟子》《礼记》《大学》《中庸》《荀子》《道德经》《庄子》《菜根谭》《增广贤文》《朱子家训》《弟子规》《颜氏家训》《围炉夜话》《小窗幽记》《了凡四训》《曾国藩家书》等。
+
+### 现代中国社会学 / 人类学
+包括费孝通《乡土中国》、翟学伟关于关系/脸面/人情/社会信任的研究，以及 Hu、Hwang、Mayfair Yang、Kipnis、Yunxiang Yan 等关于 face / guanxi / gift exchange 的经典研究。
+
+### 沟通理论
+Goffman、Brown & Levinson、Face-Negotiation、Difficult Conversations、Getting to Yes、NVC 等只作为辅助机制，不取代中国本土语境。
+
+现代版权著作只做**概念级原创提炼**，不复制章节或长段落。完整来源策略见 `SOURCE_CORPUS.md` 与 `SOURCES.md`。
 
 ## 设计原则
 
-### 1. 先读局，再说话
+- 先读局，再说话。
+- “懂人情”不等于迎合。
+- “给面子”不等于隐瞒。
+- “礼尚往来”不等于行贿或强制债务。
+- “尊长”不等于无条件服从。
+- 低风险社交可含蓄；高风险事实必须明确。
+- 用户真实上下文永远优先于“中国人通常怎样”的先验。
+- 最终输出要像真实的人，而不是 AI 在表演礼貌。
 
-不是“这句话怎么说更高情商”，而是先问：
+## Inspiration
 
-- 对方是谁？
-- 关系远近与角色是什么？
-- 谁在求人，谁承担责任？
-- 有没有第三人在场？
-- 需要保全谁的体面？
-- 是一次性交互还是长期关系？
-- 当前真正目标是什么？
-- 现在最不该做什么？
-
-### 2. “懂人情”不等于“迎合”
-
-本 Skill 不把阿谀、强迫喝酒、送礼换利益、隐瞒严重错误、无底线服从等行为包装成“中国文化”。
-
-### 3. 高风险场景直接性高于含蓄
-
-涉及安全、法律、医疗、金钱、学术诚信、合同、明确责任时：可以保留体面，但不能牺牲事实、证据或必要的明确表达。
-
-## 项目来源
-
-本项目受到 [SocialAI-tianji/Tianji](https://github.com/SocialAI-tianji/Tianji) “按社交场景组织人情世故能力”的工程思路启发。Tianji 使用 Apache-2.0 License。本仓库的规则正文为重新整理、提炼和编写的独立内容，并在 `NOTICE.md` 中记录参考来源。
-
-Agent Skills 结构遵循开放的 [Agent Skills Specification](https://agentskills.io/specification)。
-
-## 状态
-
-当前为 **v0.1 foundation**：先建立可运行的文化推理骨架、核心准则、场景与评测。后续重点是继续从公开/可合法使用的经典、教材标准、语言学与真实匿名场景中扩充高质量规则与 eval，而不是堆砌话术。
+本项目受 [SocialAI-tianji/Tianji](https://github.com/SocialAI-tianji/Tianji) 按真实社交场景组织能力的工程方向启发。Tianji 使用 Apache-2.0 License；本仓库规则正文、guide、digests、examples 与 eval 均为独立整理与原创转译，详见 `NOTICE.md`。
 
 ## License
 
