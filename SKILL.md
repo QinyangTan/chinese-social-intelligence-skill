@@ -5,8 +5,9 @@ license: Apache-2.0
 compatibility: Agent Skills compatible; usable as prompt/context by general LLMs
 metadata:
   language: zh-CN
-  version: "0.1.0"
+  version: "0.2.0"
   cultural-default: modern-mainland-china
+  executable-guides: "460"
 ---
 
 # Chinese Social Intelligence
@@ -82,6 +83,42 @@ Examples:
 - “人情往来” never means bribery or quid-pro-quo corruption.
 - “孝/尊长” never means unconditional obedience.
 
+## Guide library
+
+This skill includes **460 executable guides** in `references/guides/`, grouped into 23 modules.
+
+Read `references/guides/INDEX.md` to select modules. Do **not** load all 460 guides unless the user explicitly requests a full audit/research task.
+
+Recommended retrieval:
+
+- family/elders → `02-family-elders.md`
+- friends/peers → `03-friends-peers.md`
+- workplace → `04-workplace.md`
+- supervisor/subordinate → `05-power-distance.md`
+- school/teacher/student → `06-school.md`
+- favors/networking → `07-favors.md`
+- gifts/dining/drinking → `08-gifts-hospitality.md`
+- WeChat/text → `09-wechat.md`
+- group/public/face → `10-public-group.md` + `19-face-status.md`
+- requests/refusals/boundaries → `11-requests-boundaries.md`
+- reminders/money/deadlines → `12-deadlines-money.md`
+- apology/repair → `13-apology-repair.md`
+- conflict/correction → `14-conflict.md`
+- grief/illness/failure → `15-vulnerable-situations.md`
+- privacy/gossip → `16-privacy-gossip.md`
+- trust/promises → `17-trust-promises.md`
+- new environment/local custom → `18-new-environment.md`
+- natural Chinese wording → `20-natural-chinese.md`
+- celebrations/rituals → `21-rituals-celebrations.md`
+- strangers/public service → `22-public-service.md`
+- external Agent actions → `23-agent-action.md`
+
+## Book / research layer
+
+Use `SOURCE_CORPUS.md` and `references/book-digests/` when deeper cultural reasoning is needed. These contain original operational syntheses derived from public-domain classics, modern Chinese sociology/anthropology, face/guanxi research, and communication theory.
+
+Modern copyrighted works are not reproduced. Their high-level concepts are cited and independently rewritten into scoped Agent rules.
+
 ## Language behavior
 
 Unless the user asks for analysis, output the **actual usable response/action**, not a lecture.
@@ -118,16 +155,17 @@ When acting for the user (sending, posting, scheduling, editing, escalating):
 
 ## Reference loading
 
-Load only what is relevant:
+Base layer:
+- `references/social-model.md`
+- `references/modern-principles.md`
 
-- Relationship, face, reciprocity, public/private → `references/social-model.md`
-- Traditional/classical principles → `references/classics-to-rules.md`
-- Contemporary ethics and boundaries → `references/modern-principles.md`
-- Natural wording and Chinese pragmatics → `references/language-pragmatics.md`
-- Specific social situations → `references/scenario-playbook.md`
-- Tool/action decisions → `references/action-policy.md`
+Then load:
+- 1–3 matching files from `references/guides/`
+- `references/language-pragmatics.md` for wording-sensitive tasks
+- `references/action-policy.md` for external actions
+- `references/book-digests/` only when explanation/provenance is useful
 
-When several apply, use **social-model + modern-principles** first, then the scenario/language file.
+When several principles conflict, the Priority order above wins.
 
 ## Response modes
 
@@ -138,7 +176,7 @@ User asks “怎么回/帮我写/怎么说” → return sendable Chinese direct
 User asks “该不该问/该不该送/现在怎么处理” → give the recommended social action and concise reasoning.
 
 ### Agent action
-User asks the agent to perform an external action → apply the action policy before executing.
+User asks the agent to perform an external action → apply the action policy and relevant guide module before executing.
 
 ### Cultural explanation
 User asks “为什么这样说” → explain the relevant relationship, face, timing, reciprocity, or register logic without claiming all Chinese people behave identically.
